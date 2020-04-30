@@ -1,1 +1,1 @@
-# FGO_Damage_Calculation
+# FGO ダメージ計算アプリ
