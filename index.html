@@ -20,7 +20,7 @@
     </div>
     <div>
       <p>クラス相性: 
-        <select class="fa fa-arrow-down" id="class_compatibility"　v-model="class_compatibility" name="クラス相性">
+        <select class="fa fa-arrow-down" id="classCompatibility"　v-model="classCompatibility" name="クラス相性">
           <option value="1.00">等倍</option>
           <option value="2.00">有利</option>
           <option value="0.50">不利</option>
@@ -30,7 +30,7 @@
     </div>
     <div>
       <p>属性相性: 
-        <select class="fa fa-arrow-down" id="attribute_compatibility" v-model="attribute_compatibility" name="属性相性">
+        <select class="fa fa-arrow-down" id="attributeCompatibility" v-model="attributeCompatibility" name="属性相性">
           <option value="1.00">等倍</option>
           <option value="1.10">有利</option>
           <option value="0.90">不利</option>
@@ -39,7 +39,7 @@
     </div>
     <div>
       <p>クラス攻撃力補正: 
-        <select class="fa fa-arrow-down" id="class_correction" v-model="class_correction" name="クラス攻撃力補正">
+        <select class="fa fa-arrow-down" id="classCorrection" v-model="classCorrection" name="クラス攻撃力補正">
           <option value="1.00">剣・騎・月・分・降・盾</option>
           <option value="0.95">弓</option>
           <option value="1.05">槍</option>
@@ -50,30 +50,27 @@
     </div>
     <div>
       <p>カード種類 1枚目: 
-        <select class="fa fa-arrow-down" id="card_1st" v-model="card_1st" name="カード種類 1枚目">
+        <select class="fa fa-arrow-down" id="card1st" v-model="card1st" name="カード種類 1枚目">
           <option value="Q">Quick</option>
           <option value="A">Arts</option>
           <option value="B">Buster</option>
         </select>
       </p>
       <p>カード種類 2枚目: 
-        <select class="fa fa-arrow-down" id="card_2nd" v-model="card_2nd" name="カード種類 2枚目">
+        <select class="fa fa-arrow-down" id="card2nd" v-model="card2nd" name="カード種類 2枚目">
           <option value="Q">Quick</option>
           <option value="A">Arts</option>
           <option value="B">Buster</option>
         </select>
       </p>
       <p>カード種類 3枚目: 
-        <select class="fa fa-arrow-down" id="card_3rd" v-model="card_3rd" name="カード種類 3枚目">
+        <select class="fa fa-arrow-down" id="card3rd" v-model="card3rd" name="カード種類 3枚目">
           <option value="Q">Quick</option>
           <option value="A">Arts</option>
           <option value="B">Buster</option>
         </select>
       </p>
     </div>
-    <p>
-      <button class="btn" @click="calc()">計算する!!</button>
-    </p>
     <div>
       <h4 id="output" class="mt-5">1st: {{ damageResult }}</h4>
       <h4 id="output" class="mt-5">2nd: {{ damageResult2 }}</h4>
@@ -86,79 +83,52 @@
     var app = new Vue({
       el: '#app',
       data: {
-        damageResult: 0,                  //ダメージ結果
-        damageResult2: 0,                 //ダメージ結果２(1枚目の1.2倍の数値になる)
-        damageResult3: 0,                 //ダメージ結果３(1枚目の1.4倍の数値なる)
         power: '',                        //キャラクターの元の攻撃力
-        initial_correction: 0.23,         //ゲームのルール。キャラクターの元の攻撃力は必ず0.23倍される補正が入る
-        class_compatibility: '1.00',      //クラス相性
-        attribute_compatibility: '1.00',  //属性相性
-        class_correction: '1.00',         //クラス補正
-        card_1st: 'Q',                    //カード種類(1枚目)
-        card_2nd: 'Q',                    //カード種類(2枚目)
-        card_3rd: 'Q',                    //カード種類(3枚目)
+        initialCorrection: 0.23,         //ゲームのルール。キャラクターの元の攻撃力は必ず0.23倍される補正が入る
+        classCompatibility: '1.00',      //クラス相性補正値
+        attributeCompatibility: '1.00',  //属性相性補正値
+        classCorrection: '1.00',         //クラス補正値
+        card1st: 'Q',                    //カード種類(1枚目)
+        card2nd: 'Q',                    //カード種類(2枚目)
+        card3rd: 'Q',                    //カード種類(3枚目)
       },
-      methods: {
-        //カードの種類によって補正値が入る
-        calc: function(event) {
-          if (this.card_1st == "Q") {
-            Bbonus_1st = 0.8;   
-          }
-          if (this.card_1st == "A") {
-            Bbonus_1st = 1.0;
-          }
-          if (this.card_1st == "B") {
-            Bbonus_1st = 1.50;
-            Bbonus_all = 0.5;     // 1枚目がの場合全てのカードの攻撃力が+0.5倍される
-          }
-          if (this.card_2nd == "Q") {
-            Bbonus_2nd = 0.96;   
-          }
-          if (this.card_2nd == "A") {
-            Bbonus_2nd = 1.20;
-          }
-          if (this.card_2nd == "B") {
-            Bbonus_2nd = 1.80;
-          }
-          if (this.card_3rd == "Q") {
-            Bbonus_3rd = 1.12;
-          }
-          if (this.card_3rd == "A") {
-            Bbonus_3rd = 1.40;
-          }
-          if (this.card_3rd == "B") {
-            Bbonus_3rd = 2.10;
-          }
-          // 1枚目がバスターの場合全てのカードの攻撃力が+0.5倍される
-          if (this.card_1st == 'B') {
-            Bbonus_1st += Bbonus_all
-            Bbonus_2nd += Bbonus_all
-            Bbonus_3rd += Bbonus_all
-          }
+      computed: {
+        damageResult() {
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibilityResult * this.attributeCompatibilityResult * this.classCorrectionResult * this.Bbonus1st)
+        },
+        damageResult2() {
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibilityResult * this.attributeCompatibilityResult * this.classCorrectionResult * this.Bbonus2nd)
+        },
+        damageResult3() {
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibilityResult * this.attributeCompatibilityResult * this.classCorrectionResult * this.Bbonus3rd)
+        },
+        classCompatibilityResult() {
+          return this.classCompatibility
+        },
+        attributeCompatibilityResult() {
+          return this.attributeCompatibility
+        },
+        classCorrectionResult() {
+          return this.classCorrection
+        },
+        Bbonus1st() {
+          if (this.card1st == "Q") return 0.8
+          if (this.card1st == "A") return 1.0
+          if (this.card1st == "B") return 1.5
 
-          // Busterカードを3枚選んだなら --> 計算されたダメージ + (power * 0.2)の数値になる
-          if (this.card_1st == this.card_2nd && this.card_2nd == this.card_3rd && this.card_1st == "B") {
-            bonus = this.power * 0.2
-
-            // 1枚目のダメージ結果
-            result = Math.floor(this.power * this.initial_correction * this.class_compatibility * this.attribute_compatibility * this.class_correction * Bbonus_1st)
-            this.damageResult = result + bonus
-
-            // 2枚目のダメージ結果(1枚目の1.2倍の数値になる)
-            result2 = Math.floor(this.power * this.initial_correction * this.class_compatibility * this.attribute_compatibility * this.class_correction * Bbonus_2nd)
-            this.damageResult2 = result2 + bonus
-
-            // 3枚目のダメージ結果(1枚目の1.4倍の数値になる)
-            result3 = Math.floor(this.power * this.initial_correction * this.class_compatibility * this.attribute_compatibility * this.class_correction * Bbonus_3rd)
-            this.damageResult3 = result3 + bonus
-          }
-          // 通常のダメージ計算
-          else {
-            this.damageResult = Math.floor(this.power * this.initial_correction * this.class_compatibility * this.attribute_compatibility * this.class_correction * Bbonus_1st)
-            this.damageResult2 = Math.floor(this.power * this.initial_correction * this.class_compatibility * this.attribute_compatibility * this.class_correction * Bbonus_2nd)
-            this.damageResult3 = Math.floor(this.power * this.initial_correction * this.class_compatibility * this.attribute_compatibility * this.class_correction * Bbonus_3rd)
-          }
-        }
+        },
+        Bbonus2nd() {
+          if (this.card2nd == "A") return 1.20
+          if (this.card2nd == "B") return 1.80
+          if (this.card2nd == "Q") return 0.96
+          if (this.card2nd == "A") return 1.20
+          if (this.card2nd == "B") return 1.80
+        },
+        Bbonus3rd() {
+          if (this.card3rd == "Q") return 1.12
+          if (this.card3rd == "A") return 1.40
+          if (this.card3rd == "B") return 2.10
+        },
       }
     })
   </script>
