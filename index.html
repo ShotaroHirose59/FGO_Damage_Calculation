@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FGOダメージ計算</title>
-
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
@@ -83,7 +82,7 @@
     var app = new Vue({
       el: '#app',
       data: {
-        power: '',                        //キャラクターの元の攻撃力
+        power: '',                       //キャラクターの元の攻撃力
         initialCorrection: 0.23,         //ゲームのルール。キャラクターの元の攻撃力は必ず0.23倍される補正が入る
         classCompatibility: '1.00',      //クラス相性補正値
         attributeCompatibility: '1.00',  //属性相性補正値
@@ -94,56 +93,78 @@
       },
       computed: {
         damageResult() {
-          return Math.floor(this.power * this.initialCorrection * this.classCompatibilityResult * this.attributeCompatibilityResult * this.classCorrectionResult * this.Bbonus1st)
+          if (this.card1st == this.card2nd && this.card2nd == this.card3rd && this.card1st == "B") {
+            ChainBonusBuster = this.power * 0.2
+            return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus1st + ChainBonusBuster)
+          }
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus1st)  
         },
         damageResult2() {
-          return Math.floor(this.power * this.initialCorrection * this.classCompatibilityResult * this.attributeCompatibilityResult * this.classCorrectionResult * this.Bbonus2nd)
+          if (this.card1st == this.card2nd && this.card2nd == this.card3rd && this.card1st == "B") {
+            ChainBonusBuster = this.power * 0.2
+            return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus2nd + ChainBonusBuster)
+          }
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus2nd)
         },
         damageResult3() {
-          return Math.floor(this.power * this.initialCorrection * this.classCompatibilityResult * this.attributeCompatibilityResult * this.classCorrectionResult * this.Bbonus3rd)
+          if (this.card1st == this.card2nd && this.card2nd == this.card3rd && this.card1st == "B") {
+            ChainBonusBuster = this.power * 0.2
+            return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus3rd + ChainBonusBuster)
+          }
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus3rd)
         },
-        classCompatibilityResult() {
-          return this.classCompatibility
+        bonus1st() {
+          if (this.card1st == "Q") {
+            return 0.80
+          }
+          if (this.card1st == "A") {
+            return 1.00
+          }
+          if (this.card1st == "B") {
+            return 2.00
+          }
         },
-        attributeCompatibilityResult() {
-          return this.attributeCompatibility
+        bonus2nd() {
+          if (this.card1st == "B" && this.card2nd == "Q") {
+            return 1.46
+          } 
+          if (this.card2nd == "Q") {
+            return 0.96
+          }
+          if (this.card1st == "B" && this.card2nd == "A") {
+            return 1.70
+          }
+          if (this.card2nd == "A") {
+            return 1.20
+          }
+          if (this.card1st == "B" && this.card2nd == "B") {
+            return 2.30
+          }
+          if (this.card2nd == "B") {
+            return 1.80
+          }
         },
-        classCorrectionResult() {
-          return this.classCorrection
-        },
-        Bbonus1st() {
-          if (this.card1st == "Q") return 0.8
-          if (this.card1st == "A") return 1.0
-          if (this.card1st == "B") return 1.5
-
-        },
-        Bbonus2nd() {
-          if (this.card2nd == "Q") return 0.96
-          if (this.card2nd == "A") return 1.20
-          if (this.card2nd == "B") return 1.80
-        },
-        Bbonus3rd() {
-          if (this.card3rd == "Q") return 1.12
-          if (this.card3rd == "A") return 1.40
-          if (this.card3rd == "B") return 2.10
-        },
+        bonus3rd() {
+          if (this.card1st == "B" && this.card3rd == "Q") {
+            return 1.62
+          }
+          if (this.card3rd == "Q") {
+            return 1.12
+          }
+          if (this.card1st == "B" && this.card3rd == "A") {
+            return 1.90
+          }
+          if (this.card3rd == "A") {
+            return 1.40
+          }
+          if (this.card1st == "B" && this.card3rd == "B") {
+            return 2.60
+          }
+          if (this.card3rd == "B") {
+            return 2.10
+          }
+        }
       }
     })
   </script>
 </body>
-
-<style>
-  .btn {
-    background: #f26964;
-    border: 0;
-    border-radius: 6px;
-    box-shadow: 0px 3px 0px #c1524e;
-    color: #fff;
-    font-size: 1.2em;
-    padding: 10px;
-    margin-top: 25px;
-    position: relative;
-    text-shadow: 1px 1px 0px rgba(0,0,0,.1);
-    width: 10%;
-  }
-</style>
