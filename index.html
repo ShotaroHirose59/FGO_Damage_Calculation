@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FGOダメージ計算</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+  <div id="app" class="calc text-center mt-5">
+    <div class="header">
+      
+    </div>
+    <h1>サーヴァント 通常ダメージ計算</h1>
+    <div class="mt-5">
+      <p>攻撃力: 
+        <input type="text" id="power" v-model.number=power name="攻撃力" placeholder="攻撃力">
+      </p>
+    </div>
+    <div>
+      <p>クラス相性: 
+        <select class="fa fa-arrow-down" id="classCompatibility"　v-model="classCompatibility" name="クラス相性">
+          <option value="1.00">等倍</option>
+          <option value="2.00">有利</option>
+          <option value="0.50">不利</option>
+          <option value="1.50">狂・分 有利</option>
+        </select>
+      </p>
+    </div>
+    <div>
+      <p>属性相性: 
+        <select class="fa fa-arrow-down" id="attributeCompatibility" v-model="attributeCompatibility" name="属性相性">
+          <option value="1.00">等倍</option>
+          <option value="1.10">有利</option>
+          <option value="0.90">不利</option>
+        </select>
+      </p>
+    </div>
+    <div>
+      <p>クラス攻撃力補正: 
+        <select class="fa fa-arrow-down" id="classCorrection" v-model="classCorrection" name="クラス攻撃力補正">
+          <option value="1.00">剣・騎・月・分・降・盾</option>
+          <option value="0.95">弓</option>
+          <option value="1.05">槍</option>
+          <option value="0.90">術・殺</option>
+          <option value="1.10">狂・裁定・復讐</option>
+        </select>
+      </p>
+    </div>
+    <div>
+      <p>カード種類 1枚目: 
+        <select class="fa fa-arrow-down" id="card1st" v-model="card1st" name="カード種類 1枚目">
+          <option value="Q">Quick</option>
+          <option value="A">Arts</option>
+          <option value="B">Buster</option>
+        </select>
+      </p>
+      <p>カード種類 2枚目: 
+        <select class="fa fa-arrow-down" id="card2nd" v-model="card2nd" name="カード種類 2枚目">
+          <option value="Q">Quick</option>
+          <option value="A">Arts</option>
+          <option value="B">Buster</option>
+        </select>
+      </p>
+      <p>カード種類 3枚目: 
+        <select class="fa fa-arrow-down" id="card3rd" v-model="card3rd" name="カード種類 3枚目">
+          <option value="Q">Quick</option>
+          <option value="A">Arts</option>
+          <option value="B">Buster</option>
+        </select>
+      </p>
+    </div>
+    <div>
+      <h4 id="output" class="mt-5">1st: {{ damageResult }}</h4>
+      <h4 id="output" class="mt-5">2nd: {{ damageResult2 }}</h4>
+      <h4 id="output" class="mt-5">3rd: {{ damageResult3 }}</h4>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        power: '',                       //キャラクターの元の攻撃力
+        initialCorrection: 0.23,         //ゲームのルール。キャラクターの元の攻撃力は必ず0.23倍される補正が入る
+        classCompatibility: '1.00',      //クラス相性補正値
+        attributeCompatibility: '1.00',  //属性相性補正値
+        classCorrection: '1.00',         //クラス補正値
+        card1st: 'Q',                    //カード種類(1枚目)
+        card2nd: 'Q',                    //カード種類(2枚目)
+        card3rd: 'Q',                    //カード種類(3枚目)
+      },
+      computed: {
+        damageResult() {
+          if (this.card1st == this.card2nd && this.card2nd == this.card3rd && this.card1st == "B") {
+            ChainBonusBuster = this.power * 0.2
+            return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus1st + ChainBonusBuster)
+          }
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus1st)  
+        },
+        damageResult2() {
+          if (this.card1st == this.card2nd && this.card2nd == this.card3rd && this.card1st == "B") {
+            ChainBonusBuster = this.power * 0.2
+            return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus2nd + ChainBonusBuster)
+          }
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus2nd)
+        },
+        damageResult3() {
+          if (this.card1st == this.card2nd && this.card2nd == this.card3rd && this.card1st == "B") {
+            ChainBonusBuster = this.power * 0.2
+            return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus3rd + ChainBonusBuster)
+          }
+          return Math.floor(this.power * this.initialCorrection * this.classCompatibility * this.attributeCompatibility * this.classCorrection * this.bonus3rd)
+        },
+        bonus1st() {
+          if (this.card1st == "Q") {
+            return 0.80
+          }
+          if (this.card1st == "A") {
+            return 1.00
+          }
+          if (this.card1st == "B") {
+            return 2.00
+          }
+        },
+        bonus2nd() {
+          if (this.card1st == "B" && this.card2nd == "Q") {
+            return 1.46
+          } 
+          if (this.card2nd == "Q") {
+            return 0.96
+          }
+          if (this.card1st == "B" && this.card2nd == "A") {
+            return 1.70
+          }
+          if (this.card2nd == "A") {
+            return 1.20
+          }
+          if (this.card1st == "B" && this.card2nd == "B") {
+            return 2.30
+          }
+          if (this.card2nd == "B") {
+            return 1.80
+          }
+        },
+        bonus3rd() {
+          if (this.card1st == "B" && this.card3rd == "Q") {
+            return 1.62
+          }
+          if (this.card3rd == "Q") {
+            return 1.12
+          }
+          if (this.card1st == "B" && this.card3rd == "A") {
+            return 1.90
+          }
+          if (this.card3rd == "A") {
+            return 1.40
+          }
+          if (this.card1st == "B" && this.card3rd == "B") {
+            return 2.60
+          }
+          if (this.card3rd == "B") {
+            return 2.10
+          }
+        }
+      }
+    })
+  </script>
+</body>
